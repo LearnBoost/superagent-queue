@@ -1,0 +1,19 @@
+{
+  "name": "superagent-queue",
+  "dependencies": "adds a `queue` fn to define request queues",
+  "version": "0.0.1",
+  "main": "./superagent-queue",
+  "dependencies": {
+    "superagent": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "express": "3.0.0rc1"
+  },
+  "component": {
+    "scripts": {
+      "superagent-queue": "./superagent-queue.js"
+    }
+  }
+}
