@@ -120,4 +120,10 @@ describe('superagent-queue', function(){
       })
   });
 
+  it('work with no callback', function(done){
+    var xhr = superagent.get('http://localhost:5005').queue('test');
+    xhr.on('end', done);
+    xhr.end();
+  });
+
 });
