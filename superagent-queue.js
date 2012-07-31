@@ -65,7 +65,11 @@ function extend(sa){
       , fn = item[1]
 
     // immutable .length hack :\
-    if (fn.length == 1) {
+    if (!fn) {
+      oldEnd.call(obj, function(){
+        unqueue(name);
+      });
+    } else if (fn.length == 1) {
       oldEnd.call(obj, function(res){
         fn(res);
         unqueue(name);
