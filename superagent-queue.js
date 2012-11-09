@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var superagent = require('superagent')
+var superagent = require('superagent');
 
 /**
  * Module exports.
@@ -19,14 +19,14 @@ module.exports = extend;
  */
 
 function extend(sa){
-  var Request = sa.Request
+  var Request = sa.Request;
 
   /**
    * Queues.
    */
 
-  var queues = {}
-    , running = {}
+  var queues = {};
+  var running = {};
 
   /**
    * `queue` method.
@@ -61,8 +61,8 @@ function extend(sa){
       return;
     }
 
-    var obj = item[0]
-      , fn = item[1]
+    var obj = item[0];
+    var fn = item[1];
 
     // immutable .length hack :\
     if (!fn) {
@@ -71,12 +71,12 @@ function extend(sa){
       });
     } else if (fn.length == 1) {
       oldEnd.call(obj, function(res){
-        fn(res);
+        fn && fn(res);
         unqueue(name);
       });
     } else {
       oldEnd.call(obj, function(err, res){
-        fn(err, res);
+        fn && fn(err, res);
         unqueue(name);
       });
     }
