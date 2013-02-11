@@ -120,7 +120,24 @@ describe('superagent-queue', function(){
       })
   });
 
-  it('work with no callback', function(done){
+  it('supports abort()', function(done){
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){});
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){
+        throw new Error('should have been abort()ed');
+      }).abort();
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){ done(); });
+  });
+
+  it('works with no callback', function(done){
     var xhr = superagent.get('http://localhost:5005').queue('test');
     xhr.on('end', done);
     xhr.end();

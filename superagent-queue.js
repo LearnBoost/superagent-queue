@@ -42,10 +42,13 @@ function extend(sa){
   };
 
   /**
-   * Reference to original `end`.
+   * Reference to original functions.
    */
 
   var oldEnd = Request.prototype.end;
+  // the node version does not support abort() yet:
+  // see https://github.com/visionmedia/superagent/issues/157
+  var oldAbort = Request.prototype.abort || function () { return this; };
 
   /**
    * Checks for queued requests.
@@ -101,6 +104,33 @@ function extend(sa){
     } else {
       oldEnd.call(this, fn);
     }
+    return this;
+  };
+
+  /**
+   * Overrides `abort` method to remove the request from the queue.
+   *
+   * @api private
+   */
+
+  Request.prototype.abort = function(){
+    var queue = this.queueName;
+
+    if (!queue || !queues[queue])
+      return oldAbort.call(this);
+
+    for (var index = queues[queue].length - 1; index >= 0; index--) {
+      var item = queues[queue][index];
+      if (item[0] == this)
+        break;
+    }
+    if (~index) { // still in queue, just remove it
+      queues[queue].splice(index, 1);
+    } else {
+      oldAbort.call(this);
+      unqueue(queue);
+    }
+    return this;
   };
 };
 
