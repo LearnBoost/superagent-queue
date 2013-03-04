@@ -130,6 +130,30 @@ describe('superagent-queue', function(){
       });
   });
 
+  it('should support concurrency', function(done){
+    var total = 4;
+    setTimeout(function(){
+      concurrent.should.equal(2);
+    }, 200);
+    var q = superagent.queue('woot 3', 2);
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      })
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+  });
+
   it('works with no queues', function(done){
     var total = 2;
     setTimeout(function(){

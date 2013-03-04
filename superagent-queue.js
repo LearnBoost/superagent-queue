@@ -27,11 +27,13 @@ function extend(sa){
 
   var queues = {};
   var running = {};
+  var limit = {};
 
   /**
    * Shorthand to create queued requests
    */
-  sa.queue = function(name){
+  sa.queue = function(name, concurrency){
+    limit[name] = concurrency || 1;
     return function () {
       var req = sa.apply(null, arguments);
       req.queue(name);
@@ -68,12 +70,15 @@ function extend(sa){
    */
 
   function unqueue(name){
+    if (running[name] >= limit[name] || !queues[name])
+      return;
     var item = queues[name].shift();
 
     if (!item) {
       delete queues[name];
       return;
     }
+    running[name]++;
 
     var obj = item[0];
     var fn = item[1];
@@ -81,19 +86,24 @@ function extend(sa){
     // immutable .length hack :\
     if (!fn) {
       oldEnd.call(obj, function(){
-        unqueue(name);
+        finished(name);
       });
     } else if (fn.length == 1) {
       oldEnd.call(obj, function(res){
         fn && fn(res);
-        unqueue(name);
+        finished(name);
       });
     } else {
       oldEnd.call(obj, function(err, res){
         fn && fn(err, res);
-        unqueue(name);
+        finished(name);
       });
     }
+  }
+
+  function finished(name) {
+    running[name]--;
+    unqueue(name);
   }
 
   /**
@@ -108,9 +118,12 @@ function extend(sa){
     if (queue) {
       if (!queues[queue]) {
         queues[queue] = [[this, fn]];
+        running[queue] = 0;
+        limit[queue] = limit[queue] || 1;
         unqueue(queue);
       } else {
         queues[queue].push([this, fn]);
+        unqueue(queue);
       }
     } else {
       oldEnd.call(this, fn);
@@ -139,7 +152,7 @@ function extend(sa){
       queues[queue].splice(index, 1);
     } else {
       oldAbort.call(this);
-      unqueue(queue);
+      finished(queue);
     }
     return this;
   };
