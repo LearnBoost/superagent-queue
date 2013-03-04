@@ -29,6 +29,17 @@ function extend(sa){
   var running = {};
 
   /**
+   * Shorthand to create queued requests
+   */
+  sa.queue = function(name){
+    return function () {
+      var req = sa.apply(null, arguments);
+      req.queue(name);
+      return req;
+    };
+  };
+
+  /**
    * `queue` method.
    *
    * @param {String} name of the queue

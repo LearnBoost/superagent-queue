@@ -105,6 +105,31 @@ describe('superagent-queue', function(){
       });
   });
 
+  it('works with queue shortcuts', function(done){
+    var total = 4;
+    setTimeout(function(){
+      concurrent.should.equal(2);
+    }, 200);
+    var q1 = superagent.queue('woot');
+    q1('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      })
+    q1('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    var q2 = superagent.queue('woot 2');
+    q2('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q2('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+  });
+
   it('works with no queues', function(done){
     var total = 2;
     setTimeout(function(){
