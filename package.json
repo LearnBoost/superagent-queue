@@ -1,6 +1,6 @@
 {
   "name": "superagent-queue",
-  "dependencies": "adds a `queue` fn to define request queues",
+  "description": "adds a `queue` fn to define request queues",
   "version": "0.0.3",
   "main": "./superagent-queue",
   "dependencies": {

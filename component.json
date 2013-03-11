@@ -1,0 +1,14 @@
+{
+  "name": "superagent-queue",
+  "repo": "LearnBoost/superagent-queue",
+  "description": "adds a `queue` fn to define request queues",
+  "version": "0.0.3",
+  "scripts": [
+    "superagent-queue.js"
+  ],
+  "main": "superagent-queue.js",
+  "dependencies": {
+    "visionmedia/superagent": "*"
+  },
+  "license": "MIT"
+}

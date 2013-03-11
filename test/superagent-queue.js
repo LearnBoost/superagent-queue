@@ -105,6 +105,55 @@ describe('superagent-queue', function(){
       });
   });
 
+  it('works with queue shortcuts', function(done){
+    var total = 4;
+    setTimeout(function(){
+      concurrent.should.equal(2);
+    }, 200);
+    var q1 = superagent.queue('woot');
+    q1('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      })
+    q1('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    var q2 = superagent.queue('woot 2');
+    q2('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q2('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+  });
+
+  it('should support concurrency', function(done){
+    var total = 4;
+    setTimeout(function(){
+      concurrent.should.equal(2);
+    }, 200);
+    var q = superagent.queue('woot 3', 2);
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      })
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+    q('http://localhost:5005/')
+      .end(function(){
+        --total || done();
+      });
+  });
+
   it('works with no queues', function(done){
     var total = 2;
     setTimeout(function(){
@@ -120,7 +169,24 @@ describe('superagent-queue', function(){
       })
   });
 
-  it('work with no callback', function(done){
+  it('supports abort()', function(done){
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){});
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){
+        throw new Error('should have been abort()ed');
+      }).abort();
+    superagent
+      .get('http://localhost:5005/')
+      .queue('woot')
+      .end(function(){ done(); });
+  });
+
+  it('works with no callback', function(done){
     var xhr = superagent.get('http://localhost:5005').queue('test');
     xhr.on('end', done);
     xhr.end();
