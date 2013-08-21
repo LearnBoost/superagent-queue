@@ -1,11 +1,10 @@
 {
   "name": "superagent-queue",
-  "dependencies": "adds a `queue` fn to define request queues",
-  "version": "0.0.3",
-  "main": "./superagent-queue",
   "dependencies": {
     "superagent": "*"
   },
+  "version": "0.0.3",
+  "main": "./superagent-queue",
   "devDependencies": {
     "mocha": "*",
     "should": "*",
@@ -15,5 +14,9 @@
     "scripts": {
       "superagent-queue": "./superagent-queue.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LearnBoost/superagent-queue.git"
   }
 }
